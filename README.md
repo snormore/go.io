@@ -1,7 +1,7 @@
 Go.iO - a Go push server
 =====
 
-A Go server providing a push server using sockjs and rabbitmq/redis.
+A Go application providing a push server using sockjs and rabbitmq.
 
 ![Go.iO Communication Sequence Diagram](https://raw.github.com/snormore/go.io/master/resource/communication-sequence.png)
 ![Go.iO Node Sequence Diagram](https://raw.github.com/snormore/go.io/master/resource/node-sequence.png)
