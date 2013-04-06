@@ -12,32 +12,20 @@ import (
 
 var (
     uri          = flag.String("uri", "amqp://guest:guest@localhost:5672/", "AMQP URI")
-    exchangeName = flag.String("exchange", "test-exchange", "Durable AMQP exchange name")
+    exchange     = flag.String("exchange", "test-exchange", "Durable, non-auto-deleted AMQP exchange name")
     exchangeType = flag.String("exchange-type", "direct", "Exchange type - direct|fanout|topic|x-custom")
-    routingKey   = flag.String("key", "test-key", "AMQP routing key")
-    body         = flag.String("body", "foobar", "Body of message")
-    reliable     = flag.Bool("reliable", true, "Wait for the publisher confirmation before exiting")
+    queue        = flag.String("queue", "test-queue", "Ephemeral AMQP queue name")
+    bindingKey   = flag.String("key", "test-key", "AMQP binding key")
+    consumerTag  = flag.String("consumer-tag", "simple-consumer", "AMQP consumer tag (should not be blank)")
+    // lifetime     = flag.Duration("lifetime", 0*time.Second, "lifetime of process before shutdown (0s=infinite)")
 )
 
-func main() {
+func GetConsumer() (*Consumer, error) {
     c, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
     if err != nil {
         log.Fatalf("%s", err)
     }
-
-    if *lifetime > 0 {
-        log.Printf("running for %s", *lifetime)
-        time.Sleep(*lifetime)
-    } else {
-        log.Printf("running forever")
-        select {}
-    }
-
-    log.Printf("shutting down")
-
-    if err := c.Shutdown(); err != nil {
-        log.Fatalf("error during shutdown: %s", err)
-    }
+    return c, err
 }
 
 type Consumer struct {
