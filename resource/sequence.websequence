@@ -6,5 +6,5 @@ Queue->GoNode: consume message
 ServerApp->WebNode: push message
 WebNode->Queue: push message
 JavascriptApp->WebNode: push message
-note over Queue,ServerApp,WebNode: many server side consumers
-note over GoNode,JavascriptApp,Queue: many Javascript consumers, \nproxied through go node
+note over Queue,ServerApp,WebNode: many server side consumers, \ncommunicating with a message \nqueue (rabbitmq or redis)
+note over GoNode,JavascriptApp,Queue: many Javascript consumers \n(SockJS or SSE), proxied through \ngo node(s) which consumes from \nthe message queue
