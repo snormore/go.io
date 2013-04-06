@@ -4,7 +4,7 @@ import (
     "github.com/igm/sockjs-go/sockjs"
     "net/http"
     "log"
-    "go.io/queue"
+    "go.io/message/queue"
     "time"
     "flag"
 )
@@ -19,7 +19,7 @@ func main() {
 
 func SockJSHandler(session sockjs.Conn) {
     log.Println("Session created")
-    consumer, err := queue.GetConsumer()
+    consumer, err := message_queue.GetConsumer()
     for {
         // val, err := session.ReadMessage()
         lifetime := flag.Duration("lifetime", 0*time.Second, "lifetime of process before shutdown (0s=infinite)")

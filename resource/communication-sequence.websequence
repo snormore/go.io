@@ -1,10 +1,10 @@
-title Go.iO Sequence
+title Go.iO Communication Sequence
 
 GoNode->JavascriptApp: push message
-Queue->ServerApp: consume message
-Queue->GoNode: consume message
+MessageQueue->ServerApp: consume message
+MessageQueue->GoNode: consume message
 ServerApp->WebNode: push message
-WebNode->Queue: push message
+WebNode->MessageQueue: push message
 JavascriptApp->WebNode: push message
-note over Queue,ServerApp,WebNode: many server side consumers, \ncommunicating with a message \nqueue (rabbitmq or redis)
-note over GoNode,JavascriptApp,Queue: many Javascript consumers \n(SockJS or SSE), proxied through \ngo node(s) which consumes from \nthe message queue
+note over MessageQueue,ServerApp,WebNode: many server side consumers, \ncommunicating with a message \nqueue (rabbitmq or redis)
+note over GoNode,JavascriptApp,MessageQueue: many Javascript consumers \n(SockJS or SSE), proxied through \ngo node(s) which consumes from \nthe message queue

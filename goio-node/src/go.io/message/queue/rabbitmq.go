@@ -1,4 +1,4 @@
-package queue
+package message_queue
 // This example declares a durable Exchange, and publishes a single message to
 // that Exchange with a given routing key.
 //
