@@ -15,11 +15,11 @@ func NewClientListener() ClientListener {
     return ClientListener{}
 }
 
-func (self ClientListener) Listen() {
+func (self *ClientListener) Listen() {
     log.Print("ClientListener: listening...")
     client_transport.Listen()
 }
 
-func (self ClientListener) Destroy() {
+func (self *ClientListener) Destroy() {
     log.Print("ClientListener: destroying...")
 }
