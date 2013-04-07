@@ -2,8 +2,8 @@ title Go.iO GoNode Sequence
 Main->ClientListener: go/spawn initialize
 Main->MessageListener: go/spawn initialize
 Main->MessageDispatcher: go/spawn initialize
-ClientListener->ClientChannel: push to
-ClientChannel->MessageDispatcher: consume from
-MessageListener->MessageChannel: push to
-MessageChannel->MessageDispatcher: consume from
-note over MessageDispatcher,MessageChannel: consume from message channel\nand push to all connections
+ClientListener->ClientTransport: push to
+ClientTransport->MessageDispatcher: consume from
+MessageListener->MessageTransport: push to
+MessageTransport->MessageDispatcher: consume from
+note over MessageDispatcher,MessageTransport: consume from message channel\nand push to all connections
