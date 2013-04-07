@@ -4,6 +4,7 @@ Main->MessageListener: go/spawn initialize
 Main->MessageDispatcher: go/spawn initialize
 ClientListener->ClientTransport: push to
 ClientTransport->MessageDispatcher: consume from
+note over ClientTransport,MessageDispatcher: consume new connections \nfrom client transport to be \nused when pushing messages \nto all client connections
 MessageListener->MessageTransport: push to
 MessageTransport->MessageDispatcher: consume from
 note over MessageDispatcher,MessageTransport: consume from message channel\nand push to all connections
