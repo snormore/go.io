@@ -14,8 +14,10 @@ func NewMessageListener() MessageListener {
 }
 
 func (self *MessageListener) Listen() {
+    log.Print("MessageListener: listening...")
     transport := message_transport.NewMessageTransport()
     self.transport = &transport
+    self.transport.Listen()
     if self.transport.GetError() != nil {
         log.Fatal("MessageListener: error during consumer initialization: %s", self.transport.GetError())
     }
