@@ -20,6 +20,10 @@ var (
     // lifetime     = flag.Duration("lifetime", 0*time.Second, "lifetime of process before shutdown (0s=infinite)")
 )
 
+type MessageListener struct {
+    consumer *Consumer
+}
+
 func GetConsumer() (*Consumer, error) {
     c, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
     if err != nil {

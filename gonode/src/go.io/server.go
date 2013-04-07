@@ -1,43 +1,22 @@
 package main
 
 import (
-    "github.com/igm/sockjs-go/sockjs"
-    "net/http"
     "log"
-    "go.io/message/queue"
-    "time"
-    "flag"
+    "go.io/message"
+    "go.io/client"
 )
 
 func main() {
     log.Println("server started")
-    sockjs.Install("/echo", SockJSHandler, sockjs.DefaultConfig)
-    http.Handle("/", http.FileServer(http.Dir("./www")))
-    err := http.ListenAndServe(":8080", nil)
-    log.Fatal(err)
-}
 
-func SockJSHandler(session sockjs.Conn) {
-    log.Println("Session created")
-    consumer, err := message_queue.GetConsumer()
-    for {
-        // val, err := session.ReadMessage()
-        lifetime := flag.Duration("lifetime", 0*time.Second, "lifetime of process before shutdown (0s=infinite)")
-        if *lifetime > 0 {
-            log.Printf("running for %s", *lifetime)
-            time.Sleep(*lifetime)
-        } else {
-            log.Printf("running forever")
-            select {}
-        }
-        if err != nil {
-            break
-        }
-        go func() { session.WriteMessage([]byte("Hello!")) }()
-    }
-    log.Printf("shutting down")
-    if err := consumer.Shutdown(); err != nil {
-        log.Fatalf("error during shutdown: %s", err)
-    }
-    log.Println("session closed")
+    // initialize message listener/consumer
+    message_listener := message.NewMessageListener()
+    message_listener.Listen()
+
+    // initialize client/connection listener
+    client_listener := client.NewClientListener()
+    client_listener.Listen()
+
+    // TODO: we need to block here possibly, destroy should happen in MessageListener
+    message_listener.Destroy()
 }
