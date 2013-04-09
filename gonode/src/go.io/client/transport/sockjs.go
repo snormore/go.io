@@ -23,6 +23,9 @@ func ConnectionHandler(session sockjs.Conn) {
     // TODO: add connection to the client connection channel
     log.Println("Client session created: transport=sockjs)")
     for {
+        // TODO: need goroutine health listener; basically just sessionReadMessage 
+        // on all connections in channel, wait to see if connection is closed and
+        // remove from channel if it is
         // val, err := session.ReadMessage()
         // if err != nil {
         //     break

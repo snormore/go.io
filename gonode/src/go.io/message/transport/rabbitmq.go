@@ -140,7 +140,7 @@ func (self *MessageTransport) Listen() {
         return
     }
 
-    go handle(deliveries, self.done)
+    handle(deliveries, self.done)
 }
 
 func handle(deliveries <-chan amqp.Delivery, done chan error) {

@@ -9,13 +9,14 @@ import (
 func main() {
     log.Println("server started")
 
-    message_listener := message.NewMessageListener()
-    message_listener.Listen()
-
     client_listener := client.NewClientListener()
-    client_listener.Listen()
+    go client_listener.Listen();
 
-    // forever...
+    message_listener := message.NewMessageListener()
+    go message_listener.Listen()
+
+    // TODO: instead of waiting forever, wait for 'done' channel to return
+    log.Print("Main: waiting for client and message listeners to signal exit...")
     select{}
 
     message_listener.Destroy()
