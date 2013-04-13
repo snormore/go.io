@@ -1,0 +1,18 @@
+{
+    "Client": {
+        "TransportType": "go.io/client/transport/SockjsClientTransport",
+        "Transport": {
+
+        }
+    },
+
+    "Message": {
+        "TransportType": "go.io/consumer/transport/RabbitmqMessageTransport",
+        "Transport": {
+
+        }
+    },
+
+    "LogFile": "log/gonode.log",
+    "Verbosity": 2,
+}

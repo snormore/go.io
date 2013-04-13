@@ -24,6 +24,8 @@ source sbin/init-env.sh
 sbin/go-get.sh
 ```
 
+If you use SublimeText as your editor, check out the plugin https://github.com/DisposaBoy/GoSublime
+
 Building
 ========
 ```

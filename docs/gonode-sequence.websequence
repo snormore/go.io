@@ -1,0 +1,10 @@
+title Go.iO GoNode Sequence
+Main->Client: go listen
+Main->Consumer: go listen
+Main->Dispatcher: go listen
+Client->ClientTransport: push to
+ClientTransport->Dispatcher: consume from
+note over ClientTransport,Dispatcher: consume new connections \nfrom client transport to be \nused when pushing messages \nto all client connections
+Consumer->ConsumerTransport: push to
+ConsumerTransport->Dispatcher: consume from
+note over Dispatcher,ConsumerTransport: consume from message channel\nand push to all clients
