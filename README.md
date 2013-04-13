@@ -8,15 +8,39 @@ A Go application providing a push server using sockjs and rabbitmq.
 
 Bootstrap
 =========
-```
-source sbin/init-env.sh
-sbin/bootstrap.sh
 
-or do it yourself:
-source sbin/init-env.sh
-wget vagrant.dmg
+Download and install the latest Vagrant installer from http://downloads.vagrantup.com/
 ```
-...
+wget wget http://files.vagrantup.com/packages/64e360814c3ad960d810456add977fd4c7d47ce6/Vagrant.dmg
+```
+Now clone the repo and bootstrap your workspace
+```
+git clone git@github.com:snormore/go.io.git
+cd go.io
+vagrant up
+vagrant ssh
+cd /u/apps/go.io
+source sbin/init-env.sh
+sbin/go-get.sh
+```
+
+Building
+========
+```
+sh sbin/build.sh
+```
+
+Running
+=======
+```
+sh sbin/run.sh
+```
+
+Building and running
+====================
+```
+sh sbin/build-and-run.sh
+```
 
 TODO
 ====
