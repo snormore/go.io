@@ -1,7 +1,7 @@
 Go.iO - a Go push server
 =====
 
-A Go application providing a push server using sockjs and rabbitmq.
+A Go application providing a push server using a pluggable client transports (such as sockjs, socketio, SSE) and a pluggable consumer transport (such as rabbitmq, sqs, redis) [under development]
 
 ![Go.iO Communication Sequence Diagram](https://raw.github.com/snormore/go.io/master/docs/communication-sequence.png)
 ![Go.iO Node Sequence Diagram](https://raw.github.com/snormore/go.io/master/docs/gonode-sequence.png)

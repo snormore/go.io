@@ -1,4 +1,4 @@
-package client_transport
+package dispatcher_transport
 
 import (
 	"github.com/igm/sockjs-go/sockjs"
@@ -7,21 +7,21 @@ import (
 	"time"
 )
 
-type SockjsClientTransport struct {
+type SockjsDispatcherTransport struct {
 }
 
-func NewSockjsClientTransport() SockjsClientTransport {
-	return SockjsClientTransport{}
+func NewSockjsDispatcherTransport() SockjsDispatcherTransport {
+	return SockjsDispatcherTransport{}
 }
 
-func (self *SockjsClientTransport) Listen() {
+func (self *SockjsDispatcherTransport) Listen() {
 	sockjs.Install("/sockjs", ConnectionHandler, sockjs.DefaultConfig)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
 	http_err := http.ListenAndServe(":8080", nil)
 	log.Fatal(http_err)
 }
 
-func (self *SockjsClientTransport) Destroy() {
+func (self *SockjsDispatcherTransport) Destroy() {
 
 }
 
@@ -48,6 +48,6 @@ func ConnectionHandler(session sockjs.Conn) {
 	log.Println("Client session closed: transport=sockjs")
 }
 
-func (self *SockjsClientTransport) SendMessage(message string) {
+func (self *SockjsDispatcherTransport) SendMessage(message string) {
 	// client.connection.session.WriteMessage([]byte("{\"message\":\"Hello, Go!\", \"error\":null}"))
 }

@@ -1,13 +1,13 @@
 {
     "Client": {
-        "TransportType": "go.io/client/transport/SockjsClientTransport",
+        "TransportType": "SockjsDispatcherTransport",
         "Transport": {
 
         }
     },
 
     "Message": {
-        "TransportType": "go.io/consumer/transport/RabbitmqMessageTransport",
+        "TransportType": "RabbitmqConsumerTransport",
         "Transport": {
 
         }

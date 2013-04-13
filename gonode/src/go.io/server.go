@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go.io/client"
 	"go.io/consumer"
+	"go.io/dispatcher"
 	"log"
 	"os"
 	"os/signal"
@@ -18,18 +18,15 @@ func main() {
 	// messageChannel := make(chan string)
 	// clientChannel := make(chan client.Client)
 
-	client := client.NewClient()
-	go client.Listen()
+	_dispatcher := dispatcher.NewDispatcher()
+	go _dispatcher.Listen()
 
-	consumer := consumer.NewConsumer()
-	go consumer.Listen()
-
-	// message_dispatcher := message.NewMessageDispatcher()
-	// go message_dispatcher.Listen(messageChannel)
+	_consumer := consumer.NewConsumer()
+	go _consumer.Listen()
 
 	<-signalChannel
-	client.Destroy()
-	consumer.Destroy()
+	_dispatcher.Destroy()
+	_consumer.Destroy()
 	// if env.Config.Verbosity > 0 {
 	//     log.Println("Reports Firehose Consumer - node ending")
 	// }
