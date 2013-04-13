@@ -3,8 +3,8 @@ Go.iO - a Go push server
 
 A Go application providing a push server using sockjs and rabbitmq.
 
-![Go.iO Communication Sequence Diagram](https://raw.github.com/snormore/go.io/master/resource/communication-sequence.png)
-![Go.iO Node Sequence Diagram](https://raw.github.com/snormore/go.io/master/resource/gonode-sequence.png)
+![Go.iO Communication Sequence Diagram](https://raw.github.com/snormore/go.io/master/docs/communication-sequence.png)
+![Go.iO Node Sequence Diagram](https://raw.github.com/snormore/go.io/master/docs/gonode-sequence.png)
 
 Bootstrap
 =========
