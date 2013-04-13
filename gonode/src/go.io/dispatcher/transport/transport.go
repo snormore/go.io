@@ -1,7 +1,11 @@
 package dispatcher_transport
 
+import (
+	"go.io/dispatcher/message"
+)
+
 type DispatcherTransport interface {
-	Listen()
+	Listen(messageChannel chan dispatcher_message.Message)
 	Destroy()
 }
 

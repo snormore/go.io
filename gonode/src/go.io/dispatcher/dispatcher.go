@@ -1,6 +1,7 @@
 package dispatcher
 
 import (
+	"go.io/dispatcher/message"
 	"go.io/dispatcher/transport"
 	"log"
 )
@@ -15,9 +16,9 @@ func NewDispatcher() Dispatcher {
 	return self
 }
 
-func (self *Dispatcher) Listen() {
+func (self *Dispatcher) Listen(messageChannel chan dispatcher_message.Message) {
 	log.Print("Dispatcher: listening...")
-	self.transport.Listen()
+	self.transport.Listen(messageChannel)
 }
 
 func (self *Dispatcher) Destroy() {

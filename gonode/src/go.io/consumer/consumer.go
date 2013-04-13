@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"go.io/consumer/transport"
+	"go.io/dispatcher/message"
 	"log"
 )
 
@@ -13,11 +14,11 @@ func NewConsumer() Consumer {
 	return Consumer{}
 }
 
-func (self *Consumer) Listen() {
+func (self *Consumer) Listen(messageChannel chan dispatcher_message.Message) {
 	log.Print("Consumer: listening...")
 	transport := consumer_transport.NewConsumerTransport()
 	self.transport = &transport
-	self.transport.Listen()
+	self.transport.Listen(messageChannel)
 	if self.transport.GetError() != nil {
 		log.Fatal("Consumer: error during consumer initialization: %s", self.transport.GetError())
 	}

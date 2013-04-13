@@ -2,6 +2,7 @@ package dispatcher_transport
 
 import (
 	"github.com/igm/sockjs-go/sockjs"
+	"go.io/dispatcher/message"
 	"log"
 	"net/http"
 	"time"
@@ -14,7 +15,7 @@ func NewSockjsDispatcherTransport() SockjsDispatcherTransport {
 	return SockjsDispatcherTransport{}
 }
 
-func (self *SockjsDispatcherTransport) Listen() {
+func (self *SockjsDispatcherTransport) Listen(messageChannel chan dispatcher_message.Message) {
 	sockjs.Install("/sockjs", ConnectionHandler, sockjs.DefaultConfig)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
 	http_err := http.ListenAndServe(":8080", nil)

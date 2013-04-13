@@ -1,10 +1,14 @@
 package consumer_transport
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/streadway/amqp"
+	"go.io/dispatcher/message"
+	"go.io/env"
 	"log"
+	"time"
 )
 
 // TODO: these should come from an application json properties file
@@ -22,7 +26,6 @@ type ConsumerTransport struct {
 	connection_channel *amqp.Channel
 	transport_id       string
 	done               chan error
-	message_channel    chan string
 	err                error
 }
 
@@ -32,7 +35,6 @@ func NewConsumerTransport() ConsumerTransport {
 	self := ConsumerTransport{}
 	self.transport_id = *consumer_tag
 	self.done = make(chan error)
-	self.message_channel = make(chan string)
 
 	log.Printf("* ConsumerTransport: dialing %s", *amqp_uri)
 	self.connection, self.err = amqp.Dial(*amqp_uri)
@@ -110,7 +112,7 @@ func (self *ConsumerTransport) Destroy() {
 	<-self.done
 }
 
-func (self *ConsumerTransport) Listen() {
+func (self *ConsumerTransport) Listen(messageChannel chan dispatcher_message.Message) {
 	log.Print("ConsumerTransport: listening...")
 
 	if self.err = self.connection_channel.QueueBind(
@@ -140,18 +142,26 @@ func (self *ConsumerTransport) Listen() {
 		return
 	}
 
-	handle(deliveries, self.done)
-}
-
-func handle(deliveries <-chan amqp.Delivery, done chan error) {
 	for d := range deliveries {
-		log.Printf(
-			"got %dB delivery: [%v] %s",
-			len(d.Body),
-			d.DeliveryTag,
-			d.Body,
-		)
+		msg, err := self.CreateDispatcherMessage(d.Body)
+		if err != nil {
+			// log and stuff...
+		}
+		if time.Unix(msg.SentAt, 0).After(env.NodeStartedAt) {
+			log.Printf("%s : %s", d.Body, msg.ToJson())
+			messageChannel <- msg
+		}
 	}
 	log.Printf("handle: deliveries channel closed")
-	done <- nil
+	self.done <- nil
+}
+
+func (self *ConsumerTransport) CreateDispatcherMessage(encodedMsg []byte) (dispatcher_message.Message, error) {
+	var msg dispatcher_message.Message
+	err := json.Unmarshal(encodedMsg, &msg)
+	if err != nil {
+		// TODO: log and stuff...
+		return dispatcher_message.NewErrorMessage(err), err
+	}
+	return msg, nil
 }
