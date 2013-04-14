@@ -28,7 +28,7 @@ func main() {
 	go _consumer.Listen(messageChannel)
 
 	<-signalChannel
-	flushMessagesChannel(messageChannel)
+	flushMessageChannel(messageChannel)
 	_dispatcher.Destroy()
 	_consumer.Destroy()
 	// if env.Config.Verbosity > 0 {
@@ -37,7 +37,7 @@ func main() {
 	log.Println("Go.iO node finished.")
 }
 
-func flushMessagesChannel(ch chan dispatcher_message.Message) {
+func flushMessageChannel(ch chan dispatcher_message.Message) {
 	select {
 	case <-ch:
 	default:

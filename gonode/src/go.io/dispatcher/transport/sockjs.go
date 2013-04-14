@@ -2,6 +2,7 @@ package dispatcher_transport
 
 import (
 	"github.com/igm/sockjs-go/sockjs"
+	"go.io/dispatcher/client"
 	"go.io/dispatcher/message"
 	"log"
 	"net/http"
@@ -15,8 +16,10 @@ func NewSockjsDispatcherTransport() SockjsDispatcherTransport {
 	return SockjsDispatcherTransport{}
 }
 
-func (self *SockjsDispatcherTransport) Listen(messageChannel chan dispatcher_message.Message) {
-	sockjs.Install("/sockjs", ConnectionHandler, sockjs.DefaultConfig)
+func (self *SockjsDispatcherTransport) Listen(messageChannel chan dispatcher_message.Message, clients *dispatcher_client.Clients) {
+	sockjs.Install("/sockjs", func(session sockjs.Conn) {
+		self.ConnectionHandler(session, clients)
+	}, sockjs.DefaultConfig)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
 	http_err := http.ListenAndServe(":8080", nil)
 	log.Fatal(http_err)
@@ -26,29 +29,28 @@ func (self *SockjsDispatcherTransport) Destroy() {
 
 }
 
-type ClientConnection struct {
+type SockjsClient struct {
 	session *sockjs.Conn
 }
 
-func ConnectionHandler(session sockjs.Conn) {
-	// connection := ClientConnection{&session}
-	// client := NewClient(connection)
-	// self.clientChannel <- client
+func (self *SockjsDispatcherTransport) ConnectionHandler(session sockjs.Conn, clients *dispatcher_client.Clients) {
+	client := SockjsClient{&session}
+	clients.Add(client)
 	log.Println("Client session created: transport=sockjs)")
 	for {
-		// TODO: need goroutine health listener; basically just sessionReadMessage 
-		// on all connections in channel, wait to see if connection is closed and
-		// remove from channel if it is
-		// val, err := session.ReadMessage()
-		// if err != nil {
-		//     break
-		// }
-		time.Sleep(5 * time.Second)
-		go func() { session.WriteMessage([]byte("{\"message\":\"Hello, Go!\", \"error\":null}")) }()
+		_, err := session.ReadMessage()
+		if err != nil {
+			break
+		}
+		go func() { session.WriteMessage([]byte("{\"Id\":\"PING\", \"Body\":\"Ping\", \"Error\":null}")) }()
+		time.Sleep(1 * time.Second)
 	}
 	log.Println("Client session closed: transport=sockjs")
 }
 
-func (self *SockjsDispatcherTransport) SendMessage(message string) {
-	// client.connection.session.WriteMessage([]byte("{\"message\":\"Hello, Go!\", \"error\":null}"))
+func (self SockjsClient) SendMessage(msg string) error {
+	log.Printf("Sending message to client %s", self.session)
+	s := self.session
+	(*s).WriteMessage([]byte(msg))
+	return nil
 }
