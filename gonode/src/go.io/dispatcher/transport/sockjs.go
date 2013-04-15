@@ -11,22 +11,24 @@ import (
 )
 
 type SockjsDispatcherTransport struct {
-	auth *auth_transport.AuthTransport
+	auth auth_transport.AuthTransport
 }
 
 func NewSockjsDispatcherTransport(auth *auth_transport.AuthTransport) SockjsDispatcherTransport {
-	return SockjsDispatcherTransport{auth}
+	return SockjsDispatcherTransport{*auth}
 }
 
 func (self *SockjsDispatcherTransport) Listen(messageChannel chan dispatcher_message.Message, clients *dispatcher_client.Clients) {
 	sockjs.Install("/sockjs", func(session sockjs.Conn) {
 		client := SockjsClient{&session}
-		err := self.auth.Authenticate(&client)
-		if err != nil {
+		c := dispatcher_client.Client(client)
+		err := self.auth.Authenticate(&c)
+		if err == nil {
+			log.Println("Dispatcher client authentication passed: %s", client)
 			clients.Add(client)
 			self.ConnectionHandler(session)
 		} else {
-			log.Println("Dispatcher authentication failed: %s", err)
+			log.Println("Dispatcher client authentication failed: %s", err)
 		}
 	}, sockjs.DefaultConfig)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
