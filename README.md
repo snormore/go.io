@@ -26,6 +26,20 @@ sbin/go-get.sh
 
 If you use SublimeText as your editor, check out the plugin https://github.com/DisposaBoy/GoSublime
 
+Troubleshooting
+===============
+
+Vagrant 1.1.5 has an issue with the reload command that should be fixed soon, if you run into this issue check for an update or install a previous version 
+
+If you run into this error
+```
+go install runtime: open /usr/lib/go/pkg/linux_amd64/runtime.a: permission denied
+```
+then you are possibly seeing this issue http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=658421 and you can solve it by executing 
+```
+find /usr/lib/go/pkg -type f -exec touch {} +
+```
+
 Building
 ========
 ```
