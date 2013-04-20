@@ -1,6 +1,7 @@
 package dispatcher_transport
 
 import (
+	"go.io/auth/transport"
 	"go.io/dispatcher/client"
 	"go.io/dispatcher/message"
 )
@@ -10,8 +11,8 @@ type DispatcherTransport interface {
 	Destroy()
 }
 
-func NewDispatcherTransport() DispatcherTransport {
+func NewDispatcherTransport(auth *auth_transport.AuthTransport) DispatcherTransport {
 	// TODO: which transport to use should come from env config
-	t := NewSockjsDispatcherTransport()
+	t := NewSockjsDispatcherTransport(auth)
 	return DispatcherTransport(&t)
 }

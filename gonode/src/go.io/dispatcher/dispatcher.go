@@ -1,6 +1,8 @@
 package dispatcher
 
 import (
+	"go.io/auth"
+	"go.io/auth/transport"
 	"go.io/dispatcher/client"
 	"go.io/dispatcher/message"
 	"go.io/dispatcher/transport"
@@ -14,12 +16,14 @@ const (
 type Dispatcher struct {
 	transport dispatcher_transport.DispatcherTransport
 	clients   *dispatcher_client.Clients
+	auth      *auth_transport.AuthTransport
 }
 
 func NewDispatcher() Dispatcher {
-	transport := dispatcher_transport.NewDispatcherTransport()
+	auth := auth.NewAuthTransport()
+	transport := dispatcher_transport.NewDispatcherTransport(&auth)
 	clients := dispatcher_client.NewClients(make([]dispatcher_client.Client, 0, MAX_CLIENTS))
-	self := Dispatcher{transport, &clients}
+	self := Dispatcher{transport, &clients, &auth}
 	return self
 }
 

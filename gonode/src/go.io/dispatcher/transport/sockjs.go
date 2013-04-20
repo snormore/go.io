@@ -2,6 +2,7 @@ package dispatcher_transport
 
 import (
 	"github.com/igm/sockjs-go/sockjs"
+	"go.io/auth/transport"
 	"go.io/dispatcher/client"
 	"go.io/dispatcher/message"
 	"log"
@@ -10,15 +11,25 @@ import (
 )
 
 type SockjsDispatcherTransport struct {
+	auth auth_transport.AuthTransport
 }
 
-func NewSockjsDispatcherTransport() SockjsDispatcherTransport {
-	return SockjsDispatcherTransport{}
+func NewSockjsDispatcherTransport(auth *auth_transport.AuthTransport) SockjsDispatcherTransport {
+	return SockjsDispatcherTransport{*auth}
 }
 
 func (self *SockjsDispatcherTransport) Listen(messageChannel chan dispatcher_message.Message, clients *dispatcher_client.Clients) {
 	sockjs.Install("/sockjs", func(session sockjs.Conn) {
-		self.ConnectionHandler(session, clients)
+		client := SockjsClient{&session}
+		c := dispatcher_client.Client(client)
+		err := self.auth.Authenticate(&c)
+		if err == nil {
+			log.Println("Dispatcher client authentication passed: %s", client)
+			clients.Add(client)
+			self.ConnectionHandler(session)
+		} else {
+			log.Println("Dispatcher client authentication failed: %s", err)
+		}
 	}, sockjs.DefaultConfig)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
 	http_err := http.ListenAndServe(":8080", nil)
@@ -33,9 +44,7 @@ type SockjsClient struct {
 	session *sockjs.Conn
 }
 
-func (self *SockjsDispatcherTransport) ConnectionHandler(session sockjs.Conn, clients *dispatcher_client.Clients) {
-	client := SockjsClient{&session}
-	clients.Add(client)
+func (self *SockjsDispatcherTransport) ConnectionHandler(session sockjs.Conn) {
 	log.Println("Client session created: transport=sockjs)")
 	for {
 		_, err := session.ReadMessage()
