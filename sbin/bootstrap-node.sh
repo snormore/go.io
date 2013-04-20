@@ -1,7 +1,9 @@
 #!/bin/bash
-sudo apt-get update
-sudo apt-get install -y vim git mercurial golang
-sudo apt-get install -y rabbitmq-server redis-server
+sudo su -
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+apt-get -y install vim git mercurial golang
+apt-get -y install rabbitmq-server redis-server
 APPS_DIR="/u/apps"
 APP_NAME="go.io"
 sudo mkdir -p $APPS_DIR
