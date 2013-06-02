@@ -21,7 +21,7 @@ var (
 	consumer_tag  = flag.String("consumer-tag", "simple-consumer", "AMQP consumer tag (should not be blank)")
 )
 
-type ConsumerTransport struct {
+type RabbitmqConsumerTransport struct {
 	connection         *amqp.Connection
 	connection_channel *amqp.Channel
 	transport_id       string
@@ -29,28 +29,28 @@ type ConsumerTransport struct {
 	err                error
 }
 
-func NewConsumerTransport() ConsumerTransport {
-	log.Print("ConsumerTransport: initializing...")
+func NewRabbitmqConsumerTransport() RabbitmqConsumerTransport {
+	log.Print("RabbitmqConsumerTransport: initializing...")
 
-	self := ConsumerTransport{}
+	self := RabbitmqConsumerTransport{}
 	self.transport_id = *consumer_tag
 	self.done = make(chan error)
 
-	log.Printf("* ConsumerTransport: dialing %s", *amqp_uri)
+	log.Printf("* RabbitmqConsumerTransport: dialing %s", *amqp_uri)
 	self.connection, self.err = amqp.Dial(*amqp_uri)
 	if self.err != nil {
-		self.err = fmt.Errorf("ConsumerTransport: dial: %s", self.err)
+		self.err = fmt.Errorf("RabbitmqConsumerTransport: dial: %s", self.err)
 		return self
 	}
 
-	log.Printf("* ConsumerTransport: got Connection, getting Channel")
+	log.Printf("* RabbitmqConsumerTransport: got Connection, getting Channel")
 	self.connection_channel, self.err = self.connection.Channel()
 	if self.err != nil {
 		self.err = fmt.Errorf("Channel: %s", self.err)
 		return self
 	}
 
-	log.Printf("* ConsumerTransport: got Channel, declaring Exchange (%s)", exchange)
+	log.Printf("* RabbitmqConsumerTransport: got Channel, declaring Exchange (%s)", exchange)
 	if self.err = self.connection_channel.ExchangeDeclare(
 		*exchange,      // name of the exchange
 		*exchange_type, // type
@@ -60,11 +60,11 @@ func NewConsumerTransport() ConsumerTransport {
 		false,          // noWait
 		nil,            // arguments
 	); self.err != nil {
-		self.err = fmt.Errorf("* ConsumerTransport: Exchange Declare: %s", self.err)
+		self.err = fmt.Errorf("* RabbitmqConsumerTransport: Exchange Declare: %s", self.err)
 		return self
 	}
 
-	log.Printf("* ConsumerTransport: declared Exchange, declaring Queue (%s)", queue)
+	log.Printf("* RabbitmqConsumerTransport: declared Exchange, declaring Queue (%s)", queue)
 	state, err := self.connection_channel.QueueDeclare(
 		*queue, // name of the queue
 		true,   // durable
@@ -75,11 +75,11 @@ func NewConsumerTransport() ConsumerTransport {
 	)
 	self.err = err
 	if self.err != nil {
-		self.err = fmt.Errorf("* ConsumerTransport: Queue Declare: %s", self.err)
+		self.err = fmt.Errorf("* RabbitmqConsumerTransport: Queue Declare: %s", self.err)
 		return self
 	}
 
-	log.Printf("* ConsumerTransport: declared Queue (%d messages, %d consumers), binding to Exchange (key '%s')",
+	log.Printf("* RabbitmqConsumerTransport: declared Queue (%d messages, %d consumers), binding to Exchange (key '%s')",
 		state.Messages, state.Consumers, binding_key)
 
 	if self.err != nil {
@@ -88,32 +88,32 @@ func NewConsumerTransport() ConsumerTransport {
 	return self
 }
 
-func (self *ConsumerTransport) GetError() error {
+func (self *RabbitmqConsumerTransport) GetError() error {
 	return self.err
 }
 
-func (self *ConsumerTransport) Destroy() {
-	log.Print("ConsumerTransport: destroying...")
+func (self *RabbitmqConsumerTransport) Destroy() {
+	log.Print("RabbitmqConsumerTransport: destroying...")
 
 	// will close() the deliveries channel
 	if self.err = self.connection_channel.Cancel(self.transport_id, true); self.err != nil {
-		self.err = fmt.Errorf("* ConsumerTransport: Consumer cancel failed: %s", self.err)
+		self.err = fmt.Errorf("* RabbitmqConsumerTransport: Consumer cancel failed: %s", self.err)
 		return
 	}
 
 	if self.err = self.connection.Close(); self.err != nil {
-		self.err = fmt.Errorf("* ConsumerTransport: AMQP connection close error: %s", self.err)
+		self.err = fmt.Errorf("* RabbitmqConsumerTransport: AMQP connection close error: %s", self.err)
 		return
 	}
 
-	defer log.Printf("* ConsumerTransport: AMQP shutdown OK")
+	defer log.Printf("* RabbitmqConsumerTransport: AMQP shutdown OK")
 
 	// wait for handle() to exit
 	<-self.done
 }
 
-func (self *ConsumerTransport) Listen(messageChannel chan dispatcher_message.Message) {
-	log.Print("ConsumerTransport: listening...")
+func (self *RabbitmqConsumerTransport) Listen(messageChannel chan dispatcher_message.Message) {
+	log.Print("RabbitmqConsumerTransport: listening...")
 
 	if self.err = self.connection_channel.QueueBind(
 		*queue,       // name of the queue
@@ -122,11 +122,11 @@ func (self *ConsumerTransport) Listen(messageChannel chan dispatcher_message.Mes
 		false,        // noWait
 		nil,          // arguments
 	); self.err != nil {
-		self.err = fmt.Errorf("* ConsumerTransport: Queue Bind: %s", self.err)
+		self.err = fmt.Errorf("* RabbitmqConsumerTransport: Queue Bind: %s", self.err)
 		return
 	}
 
-	log.Printf("* ConsumerTransport: Queue bound to Exchange, starting Consume (consumer tag '%s')", self.transport_id)
+	log.Printf("* RabbitmqConsumerTransport: Queue bound to Exchange, starting Consume (consumer tag '%s')", self.transport_id)
 	deliveries, err := self.connection_channel.Consume(
 		*queue,            // name
 		self.transport_id, // consumerTag,
@@ -138,7 +138,7 @@ func (self *ConsumerTransport) Listen(messageChannel chan dispatcher_message.Mes
 	)
 	self.err = err
 	if self.err != nil {
-		self.err = fmt.Errorf("* ConsumerTransport: Queue Consume: %s", self.err)
+		self.err = fmt.Errorf("* RabbitmqConsumerTransport: Queue Consume: %s", self.err)
 		return
 	}
 
@@ -156,7 +156,7 @@ func (self *ConsumerTransport) Listen(messageChannel chan dispatcher_message.Mes
 	self.done <- nil
 }
 
-func (self *ConsumerTransport) CreateDispatcherMessage(encodedMsg []byte) (dispatcher_message.Message, error) {
+func (self *RabbitmqConsumerTransport) CreateDispatcherMessage(encodedMsg []byte) (dispatcher_message.Message, error) {
 	var msg dispatcher_message.Message
 	err := json.Unmarshal(encodedMsg, &msg)
 	if err != nil {
