@@ -31,9 +31,6 @@ func main() {
 	flushMessageChannel(messageChannel)
 	_dispatcher.Destroy()
 	_consumer.Destroy()
-	// if env.Config.Verbosity > 0 {
-	//     log.Println("Reports Firehose Consumer - node ending")
-	// }
 	log.Println("Go.iO node finished.")
 }
 
