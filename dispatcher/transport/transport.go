@@ -1,9 +1,9 @@
 package dispatcher_transport
 
 import (
-	"go.io/auth/transport"
-	"go.io/dispatcher/client"
-	"go.io/dispatcher/message"
+	"github.com/snormore/go.io/auth/transport"
+	"github.com/snormore/go.io/dispatcher/client"
+	"github.com/snormore/go.io/dispatcher/message"
 )
 
 type DispatcherTransport interface {

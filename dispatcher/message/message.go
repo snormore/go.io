@@ -7,10 +7,18 @@ import (
 )
 
 type Message struct {
-	Id     string
-	SentAt int64
-	Body   string
-	Error  string
+	Id     string `json:"id"`
+	SentAt string `json:"sent_at"`
+	Body   string `json:"body"`
+	Error  string `json: "error"`
+}
+
+func Parse(encodedJson string) (Message, error) {
+	var msg Message
+	if err := json.Unmarshal([]byte(encodedJson), &msg); err != nil {
+		return NewErrorMessage(err), err
+	}
+	return msg, nil
 }
 
 func NewErrorMessage(err error) Message {

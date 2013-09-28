@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"go.io/auth/transport"
+	"github.com/snormore/go.io/auth/transport"
 )
 
 func NewAuthTransport() auth_transport.AuthTransport {

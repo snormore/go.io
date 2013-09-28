@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/snormore/go.io/dispatcher/message"
+	// "github.com/snormore/go.io/env"
 	"github.com/streadway/amqp"
-	"go.io/dispatcher/message"
-	"go.io/env"
 	"log"
-	"time"
+	// "time"
 )
 
 // TODO: these should come from an application json properties file
@@ -88,11 +88,11 @@ func NewRabbitmqConsumerTransport() RabbitmqConsumerTransport {
 	return self
 }
 
-func (self *RabbitmqConsumerTransport) GetError() error {
+func (self RabbitmqConsumerTransport) GetError() error {
 	return self.err
 }
 
-func (self *RabbitmqConsumerTransport) Destroy() {
+func (self RabbitmqConsumerTransport) Destroy() {
 	log.Print("RabbitmqConsumerTransport: destroying...")
 
 	// will close() the deliveries channel
@@ -112,7 +112,7 @@ func (self *RabbitmqConsumerTransport) Destroy() {
 	<-self.done
 }
 
-func (self *RabbitmqConsumerTransport) Listen(messageChannel chan dispatcher_message.Message) {
+func (self RabbitmqConsumerTransport) Listen(messageChannel chan dispatcher_message.Message) {
 	log.Print("RabbitmqConsumerTransport: listening...")
 
 	if self.err = self.connection_channel.QueueBind(
@@ -147,16 +147,16 @@ func (self *RabbitmqConsumerTransport) Listen(messageChannel chan dispatcher_mes
 		if err != nil {
 			// log and stuff...
 		}
-		if time.Unix(msg.SentAt, 0).After(env.NodeStartedAt) {
-			log.Printf("%s : %s", d.Body, msg.ToJson())
-			messageChannel <- msg
-		}
+		// if time.Unix(msg.SentAt, 0).After(env.NodeStartedAt) {
+		log.Printf("%s : %s", d.Body, msg.ToJson())
+		messageChannel <- msg
+		// }
 	}
 	log.Printf("handle: deliveries channel closed")
 	self.done <- nil
 }
 
-func (self *RabbitmqConsumerTransport) CreateDispatcherMessage(encodedMsg []byte) (dispatcher_message.Message, error) {
+func (self RabbitmqConsumerTransport) CreateDispatcherMessage(encodedMsg []byte) (dispatcher_message.Message, error) {
 	var msg dispatcher_message.Message
 	err := json.Unmarshal(encodedMsg, &msg)
 	if err != nil {

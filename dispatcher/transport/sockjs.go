@@ -2,9 +2,9 @@ package dispatcher_transport
 
 import (
 	"github.com/igm/sockjs-go/sockjs"
-	"go.io/auth/transport"
-	"go.io/dispatcher/client"
-	"go.io/dispatcher/message"
+	"github.com/snormore/go.io/auth/transport"
+	"github.com/snormore/go.io/dispatcher/client"
+	"github.com/snormore/go.io/dispatcher/message"
 	"log"
 	"net/http"
 	"time"

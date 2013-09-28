@@ -1,11 +1,11 @@
 package dispatcher
 
 import (
-	"go.io/auth"
-	"go.io/auth/transport"
-	"go.io/dispatcher/client"
-	"go.io/dispatcher/message"
-	"go.io/dispatcher/transport"
+	"github.com/snormore/go.io/auth"
+	"github.com/snormore/go.io/auth/transport"
+	"github.com/snormore/go.io/dispatcher/client"
+	"github.com/snormore/go.io/dispatcher/message"
+	"github.com/snormore/go.io/dispatcher/transport"
 	"log"
 )
 

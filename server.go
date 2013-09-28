@@ -1,10 +1,10 @@
 package main
 
 import (
-	"go.io/consumer"
-	"go.io/dispatcher"
-	"go.io/dispatcher/message"
-	"go.io/env"
+	"github.com/snormore/go.io/consumer"
+	"github.com/snormore/go.io/dispatcher"
+	"github.com/snormore/go.io/dispatcher/message"
+	"github.com/snormore/go.io/env"
 	"log"
 	"os"
 	"os/signal"

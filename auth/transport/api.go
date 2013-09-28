@@ -1,7 +1,7 @@
 package auth_transport
 
 import (
-	"go.io/dispatcher/client"
+	"github.com/snormore/go.io/dispatcher/client"
 )
 
 type ApiAuthTransport struct {
