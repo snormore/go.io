@@ -2,17 +2,17 @@ package consumer_transport
 
 import (
 	"github.com/snormore/go.io/dispatcher/message"
+	"launchpad.net/tomb"
 )
 
 type ConsumerTransport interface {
-	Listen(messageChannel chan dispatcher_message.Message)
+	Listen(messages chan dispatcher_message.Message, t *tomb.Tomb)
 	Destroy()
-	CreateDispatcherMessage(encodedMsg []byte) (dispatcher_message.Message, error)
 	GetError() error
 }
 
 func NewConsumerTransport() ConsumerTransport {
-	transport := NewRabbitmqConsumerTransport()
-	t := ConsumerTransport(&transport)
+	transport := NewChannelConsumerTransport()
+	t := ConsumerTransport(transport)
 	return t
 }
