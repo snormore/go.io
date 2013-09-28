@@ -5,6 +5,7 @@ import (
 	"github.com/snormore/go.io/dispatcher"
 	"github.com/snormore/go.io/dispatcher/message"
 	"github.com/snormore/go.io/env"
+	"launchpad.net/tomb"
 	"log"
 	"os"
 	"os/signal"
@@ -21,11 +22,13 @@ func main() {
 
 	messageChannel := make(chan dispatcher_message.Message)
 
+	var dispatcherTomb tomb.Tomb
 	_dispatcher := dispatcher.NewDispatcher()
-	go _dispatcher.Listen(messageChannel)
+	go _dispatcher.Listen(messageChannel, &dispatcherTomb)
 
+	var consumerTomb tomb.Tomb
 	_consumer := consumer.NewConsumer()
-	go _consumer.Listen(messageChannel)
+	go _consumer.Listen(messageChannel, &consumerTomb)
 
 	<-signalChannel
 	flushMessageChannel(messageChannel)

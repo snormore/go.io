@@ -6,6 +6,7 @@ import (
 	"github.com/snormore/go.io/dispatcher/client"
 	"github.com/snormore/go.io/dispatcher/message"
 	"github.com/snormore/go.io/dispatcher/transport"
+	"github.com/snormore/go/logger"
 	"launchpad.net/tomb"
 	"log"
 )
@@ -36,11 +37,11 @@ func (self *Dispatcher) Listen(messageChannel chan dispatcher_message.Message, t
 
 func (self *Dispatcher) DispatchListen(messageChannel chan dispatcher_message.Message) {
 	for {
-		log.Printf("Dispatcher waiting to recieve messages...")
+		logger.Info("Dispatcher waiting to recieve messages...")
 		msg := <-messageChannel
-		log.Printf("Dispatcher received message: %s", msg.ToJson())
+		logger.Info("Dispatcher received message: %s", msg.ToJson())
 		for _, client := range self.clients.Iter() {
-			log.Printf("Sending to client %s", client)
+			logger.Info("Sending to client %s", client)
 			c := dispatcher_client.Client(client)
 			c.SendMessage(msg.ToJson())
 		}
@@ -48,6 +49,6 @@ func (self *Dispatcher) DispatchListen(messageChannel chan dispatcher_message.Me
 }
 
 func (self *Dispatcher) Destroy() {
-	log.Print("Dispatcher: destroying...")
+	logger.Info("Dispatcher: destroying...")
 	self.transport.Destroy()
 }
