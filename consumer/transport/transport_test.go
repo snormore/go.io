@@ -9,8 +9,6 @@ import (
 
 const (
 	DISPATCHER_MESSAGE_CHANNEL_SIZE = 1024
-
-	SAMPLE_ENCODED_MESSAGE = `{"id": "12345", "sent_at": "2013-01-01 00:00:01", "body": "hello, world", "error": ""}`
 )
 
 func Test(t *testing.T) { gocheck.TestingT(t) }
