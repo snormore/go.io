@@ -6,6 +6,7 @@ import (
 	"github.com/snormore/go.io/dispatcher/client"
 	"github.com/snormore/go.io/dispatcher/message"
 	"github.com/snormore/go.io/dispatcher/transport"
+	"launchpad.net/tomb"
 	"log"
 )
 
@@ -27,10 +28,10 @@ func NewDispatcher() Dispatcher {
 	return self
 }
 
-func (self *Dispatcher) Listen(messageChannel chan dispatcher_message.Message) {
+func (self *Dispatcher) Listen(messageChannel chan dispatcher_message.Message, t *tomb.Tomb) {
 	log.Print("Dispatcher: listening...")
 	go self.DispatchListen(messageChannel)
-	self.transport.Listen(messageChannel, self.clients)
+	self.transport.Listen(messageChannel, self.clients, t)
 }
 
 func (self *Dispatcher) DispatchListen(messageChannel chan dispatcher_message.Message) {
