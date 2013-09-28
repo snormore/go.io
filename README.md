@@ -1,7 +1,7 @@
 gopush - a Go push server
 ======
 
-A Go application providing a push server using a pluggable client transports (such as sockjs, socketio, SSE) and a pluggable consumer transport (such as rabbitmq, sqs, redis) [*under development*]
+A Go application providing a push server using a pluggable client transports (such as SSE, SockJS, Socket.io) and a pluggable consumer transport (such as redis, kafka, rabbitmq, sqs, 0mq) [*under development*]
 
 ![gopush sequence diagram](https://raw.github.com/snormore/gopush/master/docs/gopush-sequence.png)
 
