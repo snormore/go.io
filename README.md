@@ -32,5 +32,5 @@ go build -a -o bin/gopush
 
 TODO
 ====
- [ ] implement pluggable auth transport for use by the dispatcher to authentication clients
- [ ] implement router logic in dispatcher for routing messages based on specified channel/topic/key
+ - implement pluggable auth transport for use by the dispatcher to authentication clients
+ - implement router logic in dispatcher for routing messages based on specified channel/topic/key
