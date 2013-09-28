@@ -6,13 +6,13 @@ A Go application providing a push server using a pluggable client transports (su
 ![gopush sequence diagram](https://raw.github.com/snormore/gopush/master/docs/gopush-sequence.png)
 
 If you don't have a `GOPATH` environment variable set already, then do something like:
-```shell
+```sh
 export GOPATH=~/Go
 ```
 
 Bootstrap
 =========
-```shell
+```sh
 go get github.com/snormore/gopush
 cd $GOPATH/src/github.com/snormore/gopush
 go get -u
@@ -20,17 +20,17 @@ go get -u
 
 Testing
 =======
-```shell
+```sh
 go test ./...
 ```
 
 Buiding
 =======
-```shell
+```sh
 go build -a -o bin/gopush
 ```
 
 TODO
 ====
- - [ ] implement pluggable auth transport for use by the dispatcher to authentication clients
- - [ ] implement router logic in dispatcher for routing messages based on specified channel/topic/key
+ [ ] implement pluggable auth transport for use by the dispatcher to authentication clients
+ [ ] implement router logic in dispatcher for routing messages based on specified channel/topic/key
